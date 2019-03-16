@@ -9,28 +9,10 @@ void  yyerror(char *s);
 char* dupstr(const char *s);
 %}
 
-SPC [ \t\n\r]+;
-%x  COM STR DS
+%x COM STR
 
 %%
-"-"	        return SUB;
-"+"	        return ADD;
-"*"	        return MUL;
-"/"	        return DIV;
-"%"	        return MOD;
-"<"	        return LESS;
-">"	        return GREATER;
-"="	        return EQUAL;
-">="	      return LE;
-"<="	      return GE;
-"<>"	      return DIF;
-":="	      return ATRIBUTE;
-"++"	      return ; /*TODO*/
-"--"	      return ; /*TODO*/
-"!"	        return ; /*TODO*/
-"|"	        return OR;
-"&"	        return AND;
-"~"         return NEG;
+
 "void"      return VOID;
 "integer"   return INTEGER;
 "string"    return STRING;
@@ -49,51 +31,49 @@ SPC [ \t\n\r]+;
 "downto"    return DOWNTO;
 "break"     return BREAK;
 "continue"  return CONTINUE;
-"for"			  return FOR;
+">="	      return LE;
+"<="	      return GE;
+"<>"	      return DIF;
+":="	      return ATRIBUTE;
+"++"	      return INC;
+"--"	      return DEC;
 
-  /*Strings*/
 ([A-Za-z][A-Za-z0-9]*)|([A-Za-z]_) yylval.s = dupstr(yytext); return NAME;
 
-  /*Literals*/ /*correct?*/
- /* base 10? */
-([1-9]+[0-9]*)|("-"[1-9]+[0-9]*)   {errno = 0; yylval.i = strtol(yytext, 0, 0);
-                                   if(errno == ERANGE)   yyerror("decimal overflow");
-                                   return CTE; }
- /* base 8? */
-0[0-9]*        {errno = 0; yylval.i = strtol(yytext, 0, 0);
-               if(errno == ERANGE)   yyerror("octal overflow");
-               return CTE; }
- /* base 2? */
+-?[1-9]+[0-9]* {errno = 0; yylval.i = strtol(yytext, 0, 0);
+                if(errno == ERANGE)   yyerror("decimal overflow");
+                return INT; }
+0[0-9]*        {errno = 0; yylval.i = strtol(yytext, 0, 8);
+                if(errno == ERANGE)   yyerror("octal overflow");
+                return INT; }
 0b[01]+        {errno = 0; yylval.i = strtol(yytext, 0, 0);
-               if(errno == ERANGE)   yyerror("binary overflow");
-               return CTE; }
+                if(errno == ERANGE)   yyerror("binary overflow");
+                return INT; }
 
- /* Floating Point */
-([0-9]+\.[0-9]*)|([0-9]+\.[0-9]*e["+""-"][0-9]*) return FP;
+([0-9]+\.[0-9]*)|([0-9]+\.[0-9]*[Ee][+-]?[0-9]*) {errno = 0; yylval.d = strtod(yytext, 0);
+                                                  if(errno == ERANGE)   yyerror("floating point overflow");
+                                                  return FP; }
 
+[-+*/%!&|~^<>()?:;,\[\]{}#\n]	return *yytext;
 
- /*Delimitadores de texto*/
-[#{}()[];,]              return *yytext;
-
- /* Strings */
 \"			                 BEGIN STR;
 <STR>\"			             BEGIN 0; return STRING;
-<STR>"HR"		             strcat(yylval.s, "\n");
-<STR>"CR"		             strcat(yylval.s, "\r");
-<STR>"HT"		             strcat(yylval.s, "\t");
-<STR>"\""		             strcat(yylval.s, """);/*correct?*/
-<STR>(\\[0-9a-fA-F])|(\\[0-9a-fA-F][0-9a-fA-F]) strcat(yylval.s, yytext+1); /*?*/
+<STR>"\n"		             strcat(yylval.s, "\n");
+<STR>"\r"		             strcat(yylval.s, "\r");
+<STR>"\t"		             strcat(yylval.s, "\t");
+<STR>\\\"		             strcat(yylval.s, "\"");
+<STR>(\\[0-9A-Fa-f][^0-9A-Fa-f])|(\\[0-9A-Fa-f][0-9A-Fa-fA-F]) strcat(yylval.s, yytext);
 <STR>.|\n		             strcat(yylval.s, yytext);
 
-"=<"        BEGIN COM
-<COM> "=>"  BEGIN 0;
-<COM> .|\n  ;
+"=<"       BEGIN COM;
+<COM>"=>"  BEGIN 0;
+<COM>.|\n  ;
 
-"==".*$     ;
+"==".*\n   ;
 
-SPC         ;
-.           yyerror("Unknown character");
+[ \t\n\r]+ ;
+.          yyerror("Unknown character");
 
 %%
-int yywrap(void) { return 1; }
+int yywrap(void)  { return 1; }
 char *getyytext() { return yytext; }

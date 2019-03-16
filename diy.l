@@ -1,4 +1,4 @@
-%option debug
+%option stack debug
 %{
 #include <stdlib.h>
 #include <string.h>
@@ -56,8 +56,8 @@ char* dupstr(const char *s);
 
 [-+*/%!&|~^<>()?:;,\[\]{}#\n]	return *yytext;
 
-\"			                 BEGIN STR;
-<STR>\"			             BEGIN 0; return STRING;
+\"			                 yy_push_state(STR);
+<STR>\"			             yy_pop_state(); return STRING;
 <STR>"\n"		             strcat(yylval.s, "\n");
 <STR>"\r"		             strcat(yylval.s, "\r");
 <STR>"\t"		             strcat(yylval.s, "\t");
@@ -65,8 +65,9 @@ char* dupstr(const char *s);
 <STR>(\\[0-9A-Fa-f][^0-9A-Fa-f])|(\\[0-9A-Fa-f][0-9A-Fa-fA-F]) strcat(yylval.s, yytext);
 <STR>.|\n		             strcat(yylval.s, yytext);
 
-"=<"       BEGIN COM;
-<COM>"=>"  BEGIN 0;
+"=<"       yy_push_state(COM);
+<COM>"=<"  yy_push_state(COM);
+<COM>"=>"  yy_pop_state();
 <COM>.|\n  ;
 
 "==".*\n   ;

@@ -1,12 +1,13 @@
-%option stack debug
+%option stack
 %{
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include "node.h"
 #include "y.tab.h"
-void  yyerror(char *s);
-char* dupstr(const char *s);
+int   yyerror(char *s)     { printf("%s\n",s); return 1; }
+char *dupstr(const char*s) { return strdup(s); }
+
 %}
 
 %x COM STR
@@ -56,14 +57,14 @@ char* dupstr(const char *s);
 
 [-+*/%!&|~^<>()?:;,\[\]{}#\n]	return *yytext;
 
-\"			                 yy_push_state(STR);
+\"			                 yylval.s = dupstr(yytext+1); yy_push_state(STR);
 <STR>\"			             yy_pop_state(); return STRING;
-<STR>"\n"		             strcat(yylval.s, "\n");
-<STR>"\r"		             strcat(yylval.s, "\r");
-<STR>"\t"		             strcat(yylval.s, "\t");
+<STR>\\n		             strcat(yylval.s, "\n");
+<STR>\\r		             strcat(yylval.s, "\r");
+<STR>\\t		             strcat(yylval.s, "\t");
 <STR>\\\"		             strcat(yylval.s, "\"");
-<STR>(\\[0-9A-Fa-f][^0-9A-Fa-f])|(\\[0-9A-Fa-f][0-9A-Fa-fA-F]) strcat(yylval.s, yytext);
-<STR>.|\n		             strcat(yylval.s, yytext);
+<STR>(\\[0-9A-Fa-f])|(\\[0-9A-Fa-f][0-9A-Fa-fA-F]) strcat(yylval.s, yytext);
+<STR>.		               strcat(yylval.s, yytext);
 
 "=<"       yy_push_state(COM);
 <COM>"=<"  yy_push_state(COM);

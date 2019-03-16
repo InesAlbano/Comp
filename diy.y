@@ -5,8 +5,16 @@
 #include <string.h>
 #include "node.h"
 #include "tabid.h"
+#ifndef YYERRCODE
+#define YYERRCODE 256
+#endif
+
+#define YYDEBUG 1
+
 extern int yylex();
+extern void* yyin;
 void yyerror(char *s);
+
 %}
 
 %union {
@@ -23,12 +31,18 @@ void yyerror(char *s);
 
 
 %%
-file	:
-	;
+start:;
 %%
-char **yynames =
-#if YYDEBUG > 0
-		 (char**)yyname;
-#else
-		 0;
-#endif
+
+int main(int argc, char *argv[]) {
+	yyin = fopen(argv[1], "r");
+	extern YYSTYPE yylval;
+	int tk;
+
+	while ((tk = yylex()))
+		if (tk > YYERRCODE)
+			printf("%d:\t%s\n", tk, yyname[tk]);
+		else
+			printf("%d:\t%c\n", tk, tk);
+	return 0;
+}

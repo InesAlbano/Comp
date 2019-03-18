@@ -1,0 +1,28 @@
+public void prints(string s)
+public void printi(integer i)
+public int strlen(string s)
+
+int strcmp(const string cs, const string ct){
+	string c1, c2
+	i := 0
+	j := 0
+ do {
+		c1[j] := cs[i]
+		c2[j] := ct[i]
+		if c1 <> c2 then {
+			if c1 < c2 then {
+				prints("First string is smaller than the second one.\n")
+				strcmp := -1
+				j := -1
+			} else {
+				prints("First string is bigger than the second one.\n")
+				j := -1
+				strcmp := 1
+			}
+		}
+		if ~c1 then break;
+		i := i+1
+	} while j > 0;
+	prints("First string is equal to the second one.\n")
+	strcmp := 0
+}

@@ -1,4 +1,4 @@
-%option stack debug
+%option stack
 %{
 #include <stdlib.h>
 #include <string.h>
@@ -59,8 +59,8 @@ char *dupstr(const char*s) { return strdup(s); }
 
 \"			                 yylval.s = dupstr(yytext+1); yy_push_state(STR);
 <STR>\"			             yy_pop_state(); return STRING;
-<STR>\\0			             yy_pop_state(); return STRING;
-<STR>NULL			             yy_pop_state(); return STRING;
+<STR>\\0			           yy_pop_state(); return STRING;
+<STR>NULL			           yy_pop_state(); return STRING;
 <STR>\\n		             strcat(yylval.s, "\n");
 <STR>\\r		             strcat(yylval.s, "\r");
 <STR>\\t		             strcat(yylval.s, "\t");

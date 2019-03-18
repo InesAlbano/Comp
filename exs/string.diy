@@ -15,7 +15,7 @@ int strcmp(const string cs, const string ct){
 				strcmp := -1
 				j := -1
 			} else {
-				prints("First string is bigger than the second one.\n")
+				prints("Second string is smaller than the first one.\n")
 				j := -1
 				strcmp := 1
 			}
@@ -25,4 +25,36 @@ int strcmp(const string cs, const string ct){
 	} while j > 0;
 	prints("First string is equal to the second one.\n")
 	strcmp := 0
+}
+
+string strchr(const string s, int c){
+	i := 0
+
+	do {
+		if s[i] = "\0" then {
+			prints("null string")
+			strchr := NULL
+		}
+		i := i+1
+	} while s <> (char)c;
+
+	strchr := s
+}
+
+string strcpy(string dest, const string src){
+	string temp
+	string au
+	i := 0
+
+	do {
+		if dest[i] = "\0" then {
+			tmp[i] = dest[i]
+		}
+		i := i+1
+	} while s <> (char)c;
+
+	do {;}
+	while (strcmp(dest, src) != '\0');
+
+	strcpy := tmp;
 }

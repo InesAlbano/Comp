@@ -1,0 +1,18 @@
+public void printd(double d)
+public integer atoi(string s)
+public void println()
+
+double mean(int num) {
+   int x0 := 100003
+   mean := rand(x0, num, 0, 0)
+}
+
+public integer entry (integer argc, string *argv, string *envp) {
+  if argc > 2 then {
+    if argv[1] > 0 then {
+      printd(mean(atoi(argv[1])))
+      println()
+    }
+  }
+  entry := 0
+};

@@ -1,0 +1,10 @@
+double mean(int num)
+
+public int rand(int x, int num, int count, int sum){
+  int mul  := 27983
+  int incr := 149
+  int mod  := 1000000
+
+  if count = num then  {rand := sum / num}
+  else {rand := rand((x * mul + incr) % mod, num, count := count + 1, sum := sum + x)}
+}

@@ -1,0 +1,6 @@
+double pFatorial(int factor)
+
+double fatorial(int factor){
+  if factor = 0 then {fatorial := 1}
+  else               {fatorial := fatorial(factor-1)*factor}
+}

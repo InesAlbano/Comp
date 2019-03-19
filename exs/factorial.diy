@@ -1,0 +1,21 @@
+public void printd(double d)
+public void println()
+public integer atoi(string s)
+
+double pFatorial(int factor){
+  double result := fatorial(factor)
+  pFatorial := result
+}
+
+public integer entry (integer argc, string *argv, string *envp) {
+  if argc > 2 then {
+    if argv[1] <> NULL then {
+      printd(pFatorial((atoi[1])))
+      println()
+    } else {
+      printd(ackermann(pFatorial(5)))
+      println()
+    }
+  }
+  entry := 0
+};

@@ -2,59 +2,43 @@ public void prints(string s)
 public void printi(integer i)
 public int strlen(string s)
 
-int strcmp(const string cs, const string ct){
-	string c1, c2
-	i := 0
-	j := 0
- do {
-		c1[j] := cs[i]
-		c2[j] := ct[i]
-		if c1 <> c2 then {
-			if c1 < c2 then {
-				prints("First string is smaller than the second one.\n")
-				strcmp := -1
-				j := -1
-			} else {
-				prints("Second string is smaller than the first one.\n")
-				j := -1
-				strcmp := 1
-			}
+int strcmp(const string s1, const string s2){
+
+	int i := 0
+
+	do {
+		if s1[i] <> s2[i] then {
+			if s1[i]  < s2[i] then {strcmp := -1}
+			else 									 {strcmp :=  1}
 		}
-		if ~c1 then break;
+		if s1[i] = "\0" then {strcmp := 0}
 		i := i+1
-	} while j > 0;
-	prints("First string is equal to the second one.\n")
-	strcmp := 0
+	} while (1);
 }
 
 string strchr(const string s, int c){
 	i := 0
 
 	do {
-		if s[i] = "\0" then {
-			prints("null string")
-			strchr := NULL
+		if s[i] <> "\0" then {
+			if s[i] = c then {strchr := s}
+			else 						 {strchr := NULL}
 		}
 		i := i+1
-	} while s <> (char)c;
-
-	strchr := s
+	} while s[i] <> c;
 }
 
-string strcpy(string dest, const string src){
-	string temp
-	string au
+
+string strcpy(string d, const string s){
 	i := 0
+	string start := d
 
 	do {
-		if dest[i] = "\0" then {
-			tmp[i] = dest[i]
-		}
+		d[i] := s[i]
 		i := i+1
-	} while s <> (char)c;
+	} while s[i] <> "\0";
 
-	do {;}
-	while (strcmp(dest, src) != '\0');
+	d[i] := "\0"
 
-	strcpy := tmp;
+	strcpy := start
 }

@@ -68,8 +68,6 @@ char *dupstr(const char*s) { return strdup(s); }
 <STR>(\\[0-9A-Fa-f])|(\\[0-9A-Fa-f][0-9A-Fa-fA-F]) {char aux = (char)strtol(yytext+1, 0, 16); strncat(yylval.s, &aux, 1);}
 <STR>.		               strcat(yylval.s, yytext);
 
-."\0" ;
-
 "=<"       yy_push_state(COM);
 <COM>"=<"  yy_push_state(COM);
 <COM>"=>"  yy_pop_state();

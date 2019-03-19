@@ -55,11 +55,11 @@ char *dupstr(const char*s) { return strdup(s); }
                                                   if(errno == ERANGE)   yyerror("floating point overflow");
                                                   return FP; }
 
-[-+*/%!&|~^<>()?:;,\[\]{}#\n]	return *yytext;
+[-+*/%!&|~^<>()?:;,\[\]{}#\n=]	return *yytext;
 
 \"			                 yylval.s = dupstr(yytext+1); yy_push_state(STR);
 <STR>\"			             yy_pop_state(); return STRING;
-<STR>\\0			           yy_pop_state(); return STRING;
+<STR>"\0"			           yy_pop_state(); return STRING;
 <STR>NULL			           yy_pop_state(); return STRING;
 <STR>\\n		             strcat(yylval.s, "\n");
 <STR>\\r		             strcat(yylval.s, "\r");
@@ -67,6 +67,8 @@ char *dupstr(const char*s) { return strdup(s); }
 <STR>\\\"		             strcat(yylval.s, "\"");
 <STR>(\\[0-9A-Fa-f])|(\\[0-9A-Fa-f][0-9A-Fa-fA-F]) {char aux = (char)strtol(yytext+1, 0, 16); strncat(yylval.s, &aux, 1);}
 <STR>.		               strcat(yylval.s, yytext);
+
+."\0" ;
 
 "=<"       yy_push_state(COM);
 <COM>"=<"  yy_push_state(COM);

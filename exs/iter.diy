@@ -1,13 +1,11 @@
-double pFatorial(int factor)
-
-double fatorial(int factor){
-  int f := 0
-  int result := 1
+public number factorial(integer factor){
+  int f := 0;
+  int result := 1;
 
   do {
     result := result * f
     f := f+1
   } while (f < factor);
 
-  fatorial := result
-}
+  factorial := result
+};

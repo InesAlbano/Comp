@@ -1,16 +1,27 @@
 public void printd(double d)
 public integer atoi(string s)
+public integer readi()
+public integer rand()
 public void println()
 
-double mean(int num) {
-   int x0 := 100003
-   mean := rand(x0, num, 0, 0)
-}
+public number mean(integer num) {
+   integer x0 := 100003;
+   integer count := 0;
+   integer sum := 0;
+
+   do {
+     x0 := rand()
+     sum := sum + x0
+     count := count + 1
+   } while (count < num)
+
+   mean := sum/num
+};
 
 public integer entry (integer argc, string *argv, string *envp) {
   if argc > 2 then {
-    if argv[1] > 0 then {
-      printd(mean(atoi(argv[1])))
+    integer arg := readi();
+      printd(mean(arg))
       println()
     }
   }

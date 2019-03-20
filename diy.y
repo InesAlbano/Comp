@@ -40,8 +40,9 @@ int main(int argc, char *argv[]) {
 	int tk;
 
 	while ((tk = yylex()))
-		if (tk > YYERRCODE)
+		if (tk > YYERRCODE){
 			printf("%d:\t%s\n", tk, yyname[tk]);
+		}
 		else
 			printf("%d:\t%c\n", tk, tk);
 	return 0;

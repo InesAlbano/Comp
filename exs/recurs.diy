@@ -1,4 +1,4 @@
-publica number factorial(integer factor){
+public number factorial(integer factor){
   if factor = 0 then {factorial := 1}
   else               {factorial := factorial(factor-1)*factor}
 };

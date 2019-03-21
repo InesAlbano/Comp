@@ -1,6 +1,6 @@
 public void printd(number d)
 public integer atoi(string s)
-public void println();
+public void println()
 
 public number pFatorial(integer factor){
   number result := fatorial(factor);

@@ -12,7 +12,6 @@ int flagSC = 0;
 %}
 %x COM STR
 %%
-
 "void"      return VOID;
 "integer"   return INTEGER;
 "string"    return STRING;
@@ -38,6 +37,8 @@ int flagSC = 0;
 "++"	      return INC;
 "--"	      return DEC;
 ";"         return SC;
+
+\"[.\n]*[^\\]\"	yylval.s = malloc(yyleng); *yylval.s = 0; REJECT;
 
 ([A-Za-z][A-Za-z0-9]*)|([A-Za-z]_) {flagSC = 1; yylval.s = dupstr(yytext); return NAME;}
 

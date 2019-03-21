@@ -7,11 +7,10 @@
 #include "y.tab.h"
 int   yyerror(char *s)     { printf("%s\n",s); return 1; }
 char *dupstr(const char*s) { return strdup(s); }
+int flagSC = 0;
 
 %}
-
 %x COM STR
-
 %%
 
 "void"      return VOID;
@@ -35,32 +34,34 @@ char *dupstr(const char*s) { return strdup(s); }
 ">="	      return LE;
 "<="	      return GE;
 "<>"	      return DIF;
-":="	      return ATRIBUTE;
+":="	      return ASSIGN;
 "++"	      return INC;
 "--"	      return DEC;
+";"         return SC;
 
-([A-Za-z][A-Za-z0-9]*)|([A-Za-z]_) yylval.s = dupstr(yytext); return NAME;
+([A-Za-z][A-Za-z0-9]*)|([A-Za-z]_) {flagSC = 1; yylval.s = dupstr(yytext); return NAME;}
 
--?[1-9]+[0-9]* {errno = 0; yylval.i = strtol(yytext, 0, 0);
+-?[1-9]+[0-9]* {errno = 0; flagSC = 1; yylval.i = strtol(yytext, 0, 0);
                 if(errno == ERANGE)   yyerror("decimal overflow");
                 return INT; }
-0[0-9]*        {errno = 0; yylval.i = strtol(yytext, 0, 8);
+0[0-9]*        {errno = 0; flagSC = 1; yylval.i = strtol(yytext, 0, 8);
                 if(errno == ERANGE)   yyerror("octal overflow");
                 return INT; }
-0b[01]+        {errno = 0; yylval.i = strtol(yytext, 0, 0);
+0b[01]+        {errno = 0; flagSC = 1; yylval.i = strtol(yytext, 0, 0);
                 if(errno == ERANGE)   yyerror("binary overflow");
                 return INT; }
 
-([0-9]+\.[0-9]*)|([0-9]+\.[0-9]*[Ee][+-]?[0-9]*) {errno = 0; yylval.d = strtod(yytext, 0);
+([0-9]+\.[0-9]*)|([0-9]+\.[0-9]*[Ee][+-]?[0-9]*) {errno = 0; flagSC = 1; yylval.d = strtod(yytext, 0);
                                                   if(errno == ERANGE)   yyerror("floating point overflow");
                                                   return FP; }
-
-[-+*/%!&|~^<>()?:;,\[\]{}#\n=]	return *yytext;
+\! {flagSC = 1; return *yytext;}
+\) {flagSC = 1; return *yytext;}
+[-+*/%&|~^<>(?:;,\[\]{}#=]	return *yytext;
 
 \"			                 yylval.s = dupstr(yytext+1); yy_push_state(STR);
-<STR>\"			             yy_pop_state(); return STRING;
-<STR>"\0"			           yy_pop_state(); return STRING;
-<STR>NULL			           yy_pop_state(); return STRING;
+<STR>\"			             {flagSC = 1; yy_pop_state(); return STRING;}
+<STR>"\0"			           {flagSC = 1; yy_pop_state(); return STRING;}
+<STR>NULL			           {flagSC = 1; yy_pop_state(); return STRING;}
 <STR>\\n		             strcat(yylval.s, "\n");
 <STR>\\r		             strcat(yylval.s, "\r");
 <STR>\\t		             strcat(yylval.s, "\t");
@@ -71,12 +72,15 @@ char *dupstr(const char*s) { return strdup(s); }
 "=<"       yy_push_state(COM);
 <COM>"=<"  yy_push_state(COM);
 <COM>"=>"  yy_pop_state();
+
+\n          {if(flagSC == 1){flagSC = 0; return SC;}}
+[^ \t\n\r]  {if(flagSC == 1){flagSC = 0; return *yytext;}}
+
 <COM>.|\n  ;
 
 "==".*\n   ;
 
-[ \t\n\r]+ ;
-.          yyerror("Unknown character");
+[ \t\r]+ ;
 
 %%
 int yywrap(void)  { return 1; }

@@ -9,6 +9,19 @@ int   yyerror(char *s)     { printf("%s\n",s); return 1; }
 char *dupstr(const char*s) { return strdup(s); }
 int flagSC = 0;
 
+void trueOctal(char* octal){
+  int len = 0;
+
+  len = strlen(octal);
+
+  for (int i = len-1; i > -1; --i){
+    if (octal[i] > '7'){
+      octal[i] -= 8;
+      octal[i-1]++;
+    }
+  }
+}
+
 %}
 %x COM STR
 %%
@@ -42,13 +55,13 @@ int flagSC = 0;
 
 ([A-Za-z][A-Za-z0-9]*)|([A-Za-z]_) {flagSC = 1; yylval.s = dupstr(yytext); return NAME;}
 
--?[1-9]+[0-9]* {errno = 0; flagSC = 1; yylval.i = strtol(yytext, 0, 0);
+-?[1-9]+[0-9]* {errno = 0; flagSC = 1; yylval.i = strtol(yytext, 0, 10);
                 if(errno == ERANGE)   yyerror("decimal overflow");
                 return INT; }
-0[0-9]*        {errno = 0; flagSC = 1; yylval.i = strtol(yytext, 0, 8);
+0[0-9]*        {errno = 0; flagSC = 1; trueOctal(yytext); yylval.i = strtol(yytext, 0, 8);
                 if(errno == ERANGE)   yyerror("octal overflow");
                 return INT; }
-0b[01]+        {errno = 0; flagSC = 1; yylval.i = strtol(yytext, 0, 0);
+0b[01]+        {errno = 0; flagSC = 1; yylval.i = strtol(yytext+2, 0, 2);
                 if(errno == ERANGE)   yyerror("binary overflow");
                 return INT; }
 

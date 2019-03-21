@@ -60,8 +60,7 @@ int flagSC = 0;
 
 \"			                 yylval.s = dupstr(yytext+1); yy_push_state(STR);
 <STR>\"			             {flagSC = 1; yy_pop_state(); return STRING;}
-<STR>"\0"			           {flagSC = 1; yy_pop_state(); return STRING;}
-<STR>NULL			           {flagSC = 1; yy_pop_state(); return STRING;}
+<STR>"\0"			           ;
 <STR>\\n		             strcat(yylval.s, "\n");
 <STR>\\r		             strcat(yylval.s, "\r");
 <STR>\\t		             strcat(yylval.s, "\t");

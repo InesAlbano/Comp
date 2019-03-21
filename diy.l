@@ -51,7 +51,7 @@ void trueOctal(char* octal){
 "--"	      return DEC;
 ";"         return SC;
 
-\"[.\n]*[^\\]\"	yylval.s = malloc(yyleng); *yylval.s = 0; REJECT;
+\"[.\n]*[^\\]*\"	yylval.s = malloc(yyleng); *yylval.s = 0; REJECT;
 
 ([A-Za-z][A-Za-z0-9]*)|([A-Za-z]_) {flagSC = 1; yylval.s = dupstr(yytext); return NAME;}
 
